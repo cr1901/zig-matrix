@@ -188,7 +188,7 @@ pub fn Matrix(
             return out;
         }
 
-        pub fn multiply(a: Self, b: var) MultiplicationType(@TypeOf(a), @TypeOf(b)) {
+        pub fn multiply(a: Self, b: anytype) MultiplicationType(@TypeOf(a), @TypeOf(b)) {
             comptime var Out = MultiplicationType(@TypeOf(a), @TypeOf(b));
             var out = Out.init();
 
@@ -213,14 +213,14 @@ pub fn Matrix(
             return out;
         }
 
-        pub inline fn get(self: Self, row: usize, column: usize) T {
+        pub fn get(self: Self, row: usize, column: usize) callconv(.Inline) T {
             std.debug.assert(row < rows);
             std.debug.assert(column < columns);
 
             return self.data[row * columns + column];
         }
 
-        pub inline fn set(self: *Self, row: usize, column: usize, value: T) void {
+        pub fn set(self: *Self, row: usize, column: usize, value: T) callconv(.Inline) void {
             std.debug.assert(row < rows);
             std.debug.assert(column < columns);
 
@@ -280,7 +280,7 @@ pub fn Matrix(
             return out;
         }
 
-        pub fn eql(a: Self, b: var) bool {
+        pub fn eql(a: Self, b: anytype) bool {
             var i: usize = 0;
 
             comptime std.debug.assert(@TypeOf(b).columns == Self.columns);
@@ -299,7 +299,7 @@ pub fn Matrix(
             return true;
         }
 
-        pub fn approxEql(a: Self, b: var, epsilon: T) bool {
+        pub fn approxEql(a: Self, b: anytype, epsilon: T) bool {
             var i: usize = 0;
 
             comptime std.debug.assert(@TypeOf(b).columns == Self.columns);
@@ -322,7 +322,7 @@ pub fn Matrix(
             self: Self,
             comptime fmt: []const u8,
             options: std.fmt.FormatOptions,
-            out_stream: var,
+            out_stream: anytype,
         ) @TypeOf(out_stream).Error!void {
             try out_stream.writeAll("Matrix<");
             try std.fmt.format(out_stream, "{}", .{rows});
